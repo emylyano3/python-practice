@@ -23,6 +23,7 @@ class TokenManager:
             "password": self.cm.password,
             "grant_type": "password"
         }
+        print("Getting token")
         self.__ask_for_token(_data)
 
     def get_token(self):
@@ -62,8 +63,18 @@ def get_portfolio(token, country):
 def main():
     print("IOL Trader")
     tm = TokenManager(CredentialManager())
-    data = get_portfolio(tm.get_token(), "argentina")
-    print(data)
+    last_check = 0
+    times = 0
+    while True:
+        if time.time() - last_check > 600:
+            data = get_portfolio(tm.get_token(), "argentina")
+            print(data)
+            times = times + 1
+            last_check = time.time()
+        if times == 3:
+            exit(0)
+        time.sleep(30)
+        print("Checking data")
 
 
 if __name__ == '__main__':
